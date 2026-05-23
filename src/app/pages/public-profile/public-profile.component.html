@@ -1,0 +1,77 @@
+<main class="container public-profile fade-in">
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Consultando Base de Datos...</p>
+    </div>
+  } @else if (error()) {
+    <mat-card class="error-card">
+      <mat-card-header>
+        <mat-card-title>Mascota no registrada</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ error() }}</p>
+        <a routerLink="/" mat-raised-button color="primary">Volver al Inicio</a>
+      </mat-card-content>
+    </mat-card>
+  } @else if (mascota()) {
+    <div class="profile-header">
+      <h1>{{ mascota()?.nombre_mascota }}</h1>
+      <span class="badge">Perfil Público</span>
+    </div>
+
+    <div class="profile-grid">
+      <div class="profile-main">
+        @if (mascota()?.foto?.url) {
+          <img [src]="mascota()?.foto?.url" [alt]="mascota()?.nombre_mascota" class="pet-main-photo">
+        } @else {
+          <div class="pet-main-placeholder">Sin Foto</div>
+        }
+
+        <mat-card class="details-card">
+          <mat-card-header>
+            <mat-card-title>Información Básica</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="detail-item">
+              <span class="label">Color:</span>
+              <span class="value">{{ mascota()?.color }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Sexo:</span>
+              <span class="value">{{ mascota()?.sexo === 'H' ? 'Hembra' : 'Macho' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Microchip:</span>
+              <span class="value">{{ mascota()?.microchip || 'No registrado' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Código QR:</span>
+              <span class="value">{{ mascota()?.codigo_qr }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <aside class="profile-aside">
+        <mat-card class="contact-card">
+          <mat-card-header>
+            <mat-card-title>¿Has encontrado a {{ mascota()?.nombre_mascota }}?</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>Por favor, contacta al propietario de inmediato: <strong>{{ mascota()?.nombre_propietario }}</strong></p>
+            <div class="contact-actions">
+              <a [href]="'mailto:' + mascota()?.email" mat-raised-button color="primary" class="full-width">
+                <mat-icon>email</mat-icon> Enviar Mensaje Email
+              </a>
+              
+              <button mat-raised-button color="accent" class="full-width" (click)="compartirUbicacion()">
+                <mat-icon>location_on</mat-icon> Compartir mi Ubicación
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </aside>
+    </div>
+  }
+</main>

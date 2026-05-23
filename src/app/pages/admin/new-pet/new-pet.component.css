@@ -1,0 +1,85 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.admin-card {
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.file-group {
+  margin: 15px 0;
+}
+
+.file-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.file-input {
+  width: 100%;
+  padding: 10px;
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.preview-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.preview-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 3px solid #10b981;
+}
+
+.preview-status {
+  font-size: 0.8rem;
+  color: #10b981;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.success-card {
+  background: #dcfce7;
+  color: #166534;
+  margin-top: 24px;
+}
+
+.error-card {
+  background: #fee2e2;
+  color: #991b1b;
+  margin-top: 24px;
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

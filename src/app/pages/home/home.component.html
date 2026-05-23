@@ -1,0 +1,74 @@
+<div class="container fade-in">
+  <header class="hero">
+    <h1>Identificación de Mascotas</h1>
+    <p class="subtitle">Gestión inteligente mediante códigos QR (Angular Version)</p>
+  </header>
+
+  <mat-card class="generator-card">
+    <mat-card-header>
+      <mat-card-title>Generador de Código QR</mat-card-title>
+      <mat-card-subtitle>Ingresa un código para generar su imagen de identificación.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form (submit)="generarQR()" class="search-box">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Código QR</mat-label>
+          <input matInput [(ngModel)]="codigoBusqueda" name="codigo" placeholder="Ej: QR-8F3A92C1">
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Generando...' : 'Generar QR' }}
+        </button>
+      </form>
+
+      @if (error()) {
+        <p class="error-msg">{{ error() }}</p>
+      }
+
+      @if (qrData()) {
+        <div class="qr-result fade-in">
+          <div class="qr-wrapper">
+            <img [src]="qrData().qrBase64" alt="Código QR" class="qr-image-result">
+          </div>
+          <div class="qr-info">
+            <p><strong>URL del QR:</strong></p>
+            <a [href]="qrData().publicUrl" target="_blank" class="qr-link">
+              {{ qrData().publicUrl }}
+            </a>
+            
+            <div class="actions">
+              <a [routerLink]="['/mascotas/qr', qrData().codigo_qr]" mat-button color="accent">
+                Ver Ficha Pública
+              </a>
+              <a [routerLink]="['/admin/editar', qrData().codigo_qr]" mat-raised-button color="primary">
+                EDITAR FOTO
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <div class="info-grid">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>¿Cómo funciona?</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>El QR físico apunta a una URL única que muestra la ficha médica y de contacto de la mascota.</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Administración</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Gestiona los registros públicos de las mascotas.</p>
+        <a routerLink="/admin/nuevo" mat-raised-button color="primary">Nueva Mascota</a>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
