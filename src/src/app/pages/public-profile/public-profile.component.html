@@ -22,83 +22,42 @@
 
     <div class="profile-grid">
       <div class="profile-main">
-
-        <mat-card class="details-card">
-          <mat-card-header>
-            <mat-card-title>Información Básica</mat-card-title>
-          </mat-card-header>
-
-          <mat-card-content>
-
-            <div class="detail-item">
-              <span class="label">Color:</span>
-              <span class="value">{{ mascota()?.color }}</span>
-            </div>
-
-            <div class="detail-item">
-              <span class="label">Sexo:</span>
-              <span class="value">{{ mascota()?.sexo === 'H' ? 'Hembra' : 'Macho' }}</span>
-            </div>
-
-            <div class="detail-item">
-              <span class="label">Microchip:</span>
-              <span class="value">{{ mascota()?.microchip || 'No registrado' }}</span>
-            </div>
-
-            <div class="detail-item">
-              <span class="label">Código QR:</span>
-              <span class="value">{{ mascota()?.codigo_qr }}</span>
-            </div>
-
-          </mat-card-content>
-
-          <div class="mapa">
-
-       
-
-            <div class="mapa-google">
-            <p>
-                Ultimo Avistamiento:  {{ ultimoAvistamiento() | date:'dd/MMM/yyyy hh:mm:ss a' }}
-            </p>
-<a
-                mat-raised-button
-                color="primary"
-                target="_blank"
-                [href]="'https://www.google.com/maps/dir/?api=1&destination=' + latitud() + ',' + longitud()">
-
-                <mat-icon>directions</mat-icon>
-                Ir allí
-              </a>
-
-            <iframe 
-              width="100%"
-              height="400"
-              frameborder="0"
-              style="border:0"
-              loading="lazy"
-              allowfullscreen
-             [src]="mapUrl()">
-              
-            </iframe>
-          </div>
-
-          </div>
-
-        </mat-card>
-      </div>
-
-      <aside class="profile-aside">
-        <mat-card class="contact-card">
         @if (mascota()?.foto?.url) {
           <img [src]="mascota()?.foto?.url" [alt]="mascota()?.nombre_mascota" class="pet-main-photo">
         } @else {
           <div class="pet-main-placeholder">Sin Foto</div>
         }
 
+        <mat-card class="details-card">
+          <mat-card-header>
+            <mat-card-title>Información Básica</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="detail-item">
+              <span class="label">Color:</span>
+              <span class="value">{{ mascota()?.color }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Sexo:</span>
+              <span class="value">{{ mascota()?.sexo === 'H' ? 'Hembra' : 'Macho' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Microchip:</span>
+              <span class="value">{{ mascota()?.microchip || 'No registrado' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Código QR:</span>
+              <span class="value">{{ mascota()?.codigo_qr }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <aside class="profile-aside">
+        <mat-card class="contact-card">
           <mat-card-header>
             <mat-card-title>¿Has encontrado a {{ mascota()?.nombre_mascota }}?</mat-card-title>
           </mat-card-header>
-
           <mat-card-content>
             <p>Por favor, contacta al propietario de inmediato: <strong>{{ mascota()?.nombre_propietario }}</strong></p>
             <div class="contact-actions">

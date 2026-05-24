@@ -1,0 +1,57 @@
+<main class="container fade-in">
+  <a routerLink="/" mat-button color="basic">← Volver al Inicio</a>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Cargando datos de la mascota...</p>
+    </div>
+  } @else if (error() && !mascota()) {
+    <mat-card class="error-card">
+      <mat-card-header><mat-card-title>Error</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <p>{{ error() }}</p>
+        <a routerLink="/" mat-raised-button color="primary">Volver al Inicio</a>
+      </mat-card-content>
+    </mat-card>
+  } @else if (mascota()) {
+    <mat-card class="admin-card">
+      <mat-card-header>
+        <mat-card-title>Editar Foto de {{ mascota()?.nombre_mascota }}</mat-card-title>
+        <mat-card-subtitle>Sube una nueva foto para actualizar la ficha.</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form (submit)="handleSubmit()" class="admin-form">
+          <div class="form-group">
+            <label class="file-label">Selecciona la Nueva Foto</label>
+            <input type="file" accept="image/*" (change)="handleFileChange($event)" class="file-input">
+            
+            @if (previewUrl()) {
+              <div class="preview-container">
+                <img [src]="previewUrl()" alt="Vista previa" class="preview-img">
+                <p class="preview-status">Vista previa de la foto actual/nueva</p>
+              </div>
+            }
+          </div>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="updating() || !previewUrl()">
+            {{ updating() ? 'Actualizando...' : 'Actualizar Foto' }}
+          </button>
+        </form>
+
+        @if (success()) {
+          <mat-card class="success-card fade-in">
+            <mat-card-content>{{ success() }}</mat-card-content>
+          </mat-card>
+        }
+
+        @if (error()) {
+          <mat-card class="error-card fade-in">
+            <mat-card-content>{{ error() }}</mat-card-content>
+          </mat-card>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</main>

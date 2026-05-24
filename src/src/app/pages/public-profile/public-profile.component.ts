@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PetService, Pet } from '../../services/pet.service';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-public-profile',
@@ -27,39 +26,15 @@ export class PublicProfileComponent {
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
 
-  latitud = signal<number | null>(null);
-  longitud = signal<number | null>(null);
-  precisionMetros = signal<number | null>(null);
-  ultimoAvistamiento = signal<Date | null>(null);
-  mapUrl = signal<SafeResourceUrl | null>(null);
-
   constructor(
-
     private route: ActivatedRoute,
-    private petService: PetService,
-    private sanitizer: DomSanitizer
-
+    private petService: PetService
   ) {
     const qr = this.route.snapshot.paramMap.get('codigo_qr');
     if (qr) {
       this.petService.getPetByQr(qr).subscribe({
         next: (data) => {
           this.mascota.set(data);
-          // Cargar último avistamiento desde la BD
-          this.latitud.set(data.latitud ?? null);
-          this.longitud.set(data.longitud ?? null);
-          this.precisionMetros.set(data.precision_metros ?? null);
-          this.ultimoAvistamiento.set(data.fecha_hora ? new Date(data.fecha_hora) : null);
-
-            if (data.latitud && data.longitud) {
-
-            this.mapUrl.set(
-              this.sanitizer.bypassSecurityTrustResourceUrl(
-                `https://maps.google.com/maps?q=${data.latitud},${data.longitud}&z=16&output=embed`
-              )
-            );
-          }
-
           this.loading.set(false);
         },
         error: (err) => {
@@ -78,12 +53,6 @@ export class PublicProfileComponent {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-
-        this.latitud.set(position.coords.latitude);
-        this.longitud.set(position.coords.longitude);
-        this.precisionMetros.set(position.coords.accuracy);
-        this.ultimoAvistamiento.set(new Date());
-
         const qr = this.route.snapshot.paramMap.get('codigo_qr');
         if (!qr) return;
 

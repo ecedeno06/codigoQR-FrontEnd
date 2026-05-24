@@ -12,10 +12,6 @@ export interface Pet {
   sexo: string;
   foto?: { url: string };
   nombre_propietario?: string;
-  fecha_hora?: string;
-  latitud?: number;
-  longitud?: number;
-  precision_metros?: number;  
 }
 
 @Injectable({

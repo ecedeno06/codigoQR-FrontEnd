@@ -1,0 +1,72 @@
+<main class="container fade-in">
+  <a routerLink="/" mat-button color="basic">← Volver al Inicio</a>
+
+  <mat-card class="admin-card">
+    <mat-card-header>
+      <mat-card-title>Registrar Nueva Mascota</mat-card-title>
+      <mat-card-subtitle>Completa los datos y sube una foto desde tu máquina.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form (submit)="handleSubmit()" class="admin-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre de la Mascota</mat-label>
+          <input matInput required [(ngModel)]="formData().nombre_mascota" name="nombre_mascota" placeholder="Ej: Luna">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email del Propietario</mat-label>
+          <input matInput required type="email" [(ngModel)]="formData().email" name="email" placeholder="propietario@correo.com">
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Color</mat-label>
+            <input matInput [(ngModel)]="formData().color" name="color" placeholder="Ej: Blanco y Negro">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Sexo</mat-label>
+            <mat-select [(ngModel)]="formData().sexo" name="sexo">
+              <mat-option value="M">Macho</mat-option>
+              <mat-option value="H">Hembra</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Número de Microchip</mat-label>
+          <input matInput [(ngModel)]="formData().microchip" name="microchip" placeholder="Opcional">
+        </mat-form-field>
+
+        <div class="form-group">
+          <label class="file-label">Foto de la Mascota</label>
+          <input type="file" accept="image/*" (change)="handleFileChange($event)" class="file-input">
+          
+          @if (previewUrl()) {
+            <div class="preview-container">
+              <img [src]="previewUrl()" alt="Vista previa" class="preview-img">
+              <p class="preview-status">Imagen lista para subir</p>
+            </div>
+          }
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Guardando...' : 'Guardar Mascota' }}
+        </button>
+      </form>
+
+      @if (success()) {
+        <mat-card class="success-card fade-in">
+          <mat-card-content>{{ success() }}</mat-card-content>
+        </mat-card>
+      }
+
+      @if (error()) {
+        <mat-card class="error-card fade-in">
+          <mat-card-content>{{ error() }}</mat-card-content>
+        </mat-card>
+      }
+    </mat-card-content>
+  </mat-card>
+</main>
