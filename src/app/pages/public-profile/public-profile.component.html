@@ -52,15 +52,74 @@
 
           </mat-card-content>
 
+<!-- TABLA -->
+
+          <div class="table-container">
+
+             <!-- TABLA  -->
+             <table mat-table [dataSource]="dataSource || []">
+       
+              <ng-container matColumnDef="fecha_hora">
+                <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.fecha_hora | date:'dd/MMM/yyyy hh:mm:ss a' }}
+                </td>
+              </ng-container>
+   
+              <ng-container matColumnDef="longitud">
+                <th mat-header-cell *matHeaderCellDef>Longitud</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.longitud }}
+                </td>
+              </ng-container>
+            
+              <ng-container matColumnDef="latitud">
+                <th mat-header-cell *matHeaderCellDef>Latitud</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.latitud }}
+                </td>
+              </ng-container>
+      
+              <ng-container matColumnDef="precision_metros">
+                <th mat-header-cell *matHeaderCellDef>Precisión</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.precision_metros }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="Accion">
+                <th mat-header-cell *matHeaderCellDef>Mapa</th>
+                <td mat-cell *matCellDef="let row">
+              
+                  <button
+                    mat-button
+                    (click)="verUbicacion(row)">
+              
+                    Ver Mapa
+              
+                  </button>
+              
+                </td>
+              </ng-container>
+      
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            
+
+          </table>
+           
+
+          </div>
+
+           <!-- MAPA    -->   
+
           <div class="mapa">
 
-       
-
             <div class="mapa-google">
-            <p>
-                Ultimo Avistamiento:  {{ ultimoAvistamiento() | date:'dd/MMM/yyyy hh:mm:ss a' }}
-            </p>
-<a
+              <p>
+                  Ultimo Avistamiento:  {{ ultimoAvistamiento() | date:'dd/MMM/yyyy hh:mm:ss a' }}
+              </p>
+              <a
                 mat-raised-button
                 color="primary"
                 target="_blank"
@@ -69,23 +128,23 @@
                 <mat-icon>directions</mat-icon>
                 Ir allí
               </a>
-
-            <iframe 
-              width="100%"
-              height="400"
-              frameborder="0"
-              style="border:0"
-              loading="lazy"
-              allowfullscreen
-             [src]="mapUrl()">
-              
-            </iframe>
+                       
+              <iframe 
+                width="100%"
+                height="400"
+                frameborder="0"
+                style="border:0"
+                loading="lazy"
+                allowfullscreen
+              [src]="mapUrl()">
+                
+              </iframe>
+            
+            </div>
           </div>
-
-          </div>
-
+  
         </mat-card>
-      </div>
+      </div> 
 
       <aside class="profile-aside">
         <mat-card class="contact-card">

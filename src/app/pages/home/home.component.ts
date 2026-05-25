@@ -22,7 +22,7 @@ import { PetService } from '../../services/pet.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  codigoBusqueda = signal<string>('QR-8F3A92C1');
+  codigoBusqueda = signal<string>('QR-38038159');
   qrData = signal<any>(null);
   loading = signal<boolean>(false);
   error = signal<string | null>(null);

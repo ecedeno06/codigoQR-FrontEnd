@@ -16,17 +16,81 @@
     </mat-card>
   } @else if (mascota()) {
     <mat-card class="admin-card">
+
       <mat-card-header>
-        <mat-card-title>Editar Foto de {{ mascota()?.nombre_mascota }}</mat-card-title>
-        <mat-card-subtitle>Sube una nueva foto para actualizar la ficha.</mat-card-subtitle>
+
+        <mat-card-title>
+          Editar Foto de {{ mascota()?.nombre_mascota }}
+        </mat-card-title>
+
+        <mat-card-subtitle>
+          Sube una nueva foto o utiliza la cámara.
+        </mat-card-subtitle>
+
       </mat-card-header>
 
       <mat-card-content>
         <form (submit)="handleSubmit()" class="admin-form">
           <div class="form-group">
             <label class="file-label">Selecciona la Nueva Foto</label>
-            <input type="file" accept="image/*" (change)="handleFileChange($event)" class="file-input">
-            
+            <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            (change)="handleFileChange($event)"
+            hidden>
+
+            <input
+              #cameraInput
+              type="file"
+              accept="image/*"
+              capture="environment"
+              (change)="handleFileChange($event)"
+            hidden>
+          
+
+            <div class="botones">
+              
+             <button
+                mat-raised-button
+                color="primary"
+                type="button"
+                (click)="fileInput.click()">
+                Seleccionar Foto
+             </button>
+
+              <button
+              mat-raised-button
+              color="accent"
+              type="button"
+              (click)="startCamera()">
+              📷 Abrir Cámara
+            </button>
+
+
+            <canvas #canvas hidden></canvas>
+
+            <button
+              mat-raised-button
+              color="warn"
+              type="button"
+              (click)="takePicture()">
+              Capturar Foto
+            </button>
+
+          </div>
+       
+          
+          <video
+            #video
+            autoplay
+            playsinline
+            width="320"
+            style="margin-top:10px">
+          </video>
+
+      
+
             @if (previewUrl()) {
               <div class="preview-container">
                 <img [src]="previewUrl()" alt="Vista previa" class="preview-img">

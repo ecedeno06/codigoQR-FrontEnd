@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PetService, Pet } from '../../services/pet.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-public-profile',
@@ -17,11 +18,14 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTableModule 
   ],
   templateUrl: './public-profile.component.html',
   styleUrls: ['./public-profile.component.css']
 })
+
+
 export class PublicProfileComponent {
   mascota = signal<Pet | null>(null);
   loading = signal<boolean>(true);
@@ -32,6 +36,16 @@ export class PublicProfileComponent {
   precisionMetros = signal<number | null>(null);
   ultimoAvistamiento = signal<Date | null>(null);
   mapUrl = signal<SafeResourceUrl | null>(null);
+
+  displayedColumns: string[] = [
+    'fecha_hora',
+    'longitud',
+    'latitud',
+    'precision_metros',
+    'Accion'
+  ];
+
+  dataSource: any[] = [];
 
   constructor(
 
@@ -44,21 +58,36 @@ export class PublicProfileComponent {
     if (qr) {
       this.petService.getPetByQr(qr).subscribe({
         next: (data) => {
+
+          console.log('PET =>', data);
+          console.log('LATITUD =>', data.latitud);
+          console.log('LONGITUD =>', data.longitud);
+          console.log('FECHA =>', data.fecha_hora);
+
           this.mascota.set(data);
-          // Cargar último avistamiento desde la BD
-          this.latitud.set(data.latitud ?? null);
-          this.longitud.set(data.longitud ?? null);
-          this.precisionMetros.set(data.precision_metros ?? null);
-          this.ultimoAvistamiento.set(data.fecha_hora ? new Date(data.fecha_hora) : null);
+        
+          this.dataSource = data.avistamientos || [];
 
-            if (data.latitud && data.longitud) {
+          this.mascota.set(data);
 
-            this.mapUrl.set(
-              this.sanitizer.bypassSecurityTrustResourceUrl(
-                `https://maps.google.com/maps?q=${data.latitud},${data.longitud}&z=16&output=embed`
-              )
-            );
+        
+          this.dataSource = data.avistamientos || [];
+
+          console.log('AVISTAMIENTOS =>', this.dataSource);
+
+          // Último avistamiento para el mapa
+
+          if (data.avistamientos?.length) {
+
+            const ultimo = data.avistamientos[0];
+          
+            this.latitud.set(ultimo.latitud);
+            this.longitud.set(ultimo.longitud);
+
+            this.verUbicacion(ultimo);
+                               
           }
+
 
           this.loading.set(false);
         },
@@ -99,6 +128,32 @@ export class PublicProfileComponent {
       },
       (err) => alert("No se pudo obtener la ubicación: " + err.message),
       { enableHighAccuracy: false, timeout: 20000, maximumAge: 0 }
+    );
+  }
+
+  actualizarMapa(lat: number, lng: number) {
+
+    const url =
+      `https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+  
+    this.mapUrl.set(
+      this.sanitizer.bypassSecurityTrustResourceUrl(url)
+    );
+  }
+
+  verUbicacion(avistamiento: any) {
+
+    this.latitud.set(avistamiento.latitud);
+    this.longitud.set(avistamiento.longitud);
+    this.precisionMetros.set(avistamiento.precision_metros);
+  
+    this.ultimoAvistamiento.set(
+      new Date(avistamiento.fecha_hora)
+    );
+  
+    this.actualizarMapa(
+      avistamiento.latitud,
+      avistamiento.longitud
     );
   }
 }

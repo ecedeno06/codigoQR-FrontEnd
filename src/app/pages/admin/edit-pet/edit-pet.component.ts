@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -22,6 +22,7 @@ import { PetService, Pet } from '../../../services/pet.service';
   styleUrls: ['./edit-pet.component.css']
 })
 export class EditPetComponent {
+
   mascota = signal<Pet | null>(null);
   loading = signal<boolean>(true);
   updating = signal<boolean>(false);
@@ -29,11 +30,20 @@ export class EditPetComponent {
   error = signal<string | null>(null);
   previewUrl = signal<string | null>(null);
 
+  @ViewChild('video')
+  video!: ElementRef<HTMLVideoElement>;
+
+  @ViewChild('canvas')
+  canvas!: ElementRef<HTMLCanvasElement>;
+
+  stream: MediaStream | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private petService: PetService
   ) {
     const qr = this.route.snapshot.paramMap.get('codigo_qr');
+
     if (qr) {
       this.petService.getPetByQr(qr).subscribe({
         next: (data) => {
@@ -49,27 +59,92 @@ export class EditPetComponent {
     }
   }
 
-  handleFileChange(e: any) {
-    const file = e.target.files[0];
-    if (!file) return;
+  handleFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) {
+      return;
+    }
+
+    const file = input.files[0];
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
-      this.previewUrl.set(base64);
+
+    reader.onload = () => {
+      this.previewUrl.set(reader.result as string);
     };
+
     reader.readAsDataURL(file);
   }
 
-  handleSubmit() {
+  async startCamera(): Promise<void> {
+    try {
+
+      if (this.stream) {
+        this.stream.getTracks().forEach(track => track.stop());
+      }
+
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'environment'
+        }
+      });
+
+      this.video.nativeElement.srcObject = this.stream;
+
+    } catch (error) {
+      console.error(error);
+      this.error.set('No fue posible acceder a la cámara.');
+    }
+  }
+
+  takePicture(): void {
+
+    if (!this.video || !this.canvas) {
+      return;
+    }
+
+    const video = this.video.nativeElement;
+    const canvas = this.canvas.nativeElement;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) {
+      return;
+    }
+
+    ctx.drawImage(video, 0, 0);
+
+    const imageBase64 = canvas.toDataURL('image/jpeg');
+
+    this.previewUrl.set(imageBase64);
+
+    if (this.stream) {
+      this.stream.getTracks().forEach(track => track.stop());
+      this.stream = null;
+    }
+
+    video.srcObject = null;
+  }
+
+  handleSubmit(): void {
+
     const qr = this.route.snapshot.paramMap.get('codigo_qr');
-    if (!qr || !this.previewUrl()) return;
+
+    if (!qr || !this.previewUrl()) {
+      return;
+    }
 
     this.updating.set(true);
     this.success.set(null);
     this.error.set(null);
 
-    this.petService.updatePetPhoto(qr, { url: this.previewUrl()! }).subscribe({
+    this.petService.updatePetPhoto(qr, {
+      url: this.previewUrl()!
+    }).subscribe({
       next: () => {
         this.success.set('¡Foto actualizada con éxito!');
         this.updating.set(false);

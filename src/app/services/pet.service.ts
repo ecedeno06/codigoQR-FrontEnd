@@ -2,6 +2,14 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
+export interface avistamientos {
+  fecha_hora: string;
+  latitud: number;
+  longitud: number;
+  precision_metros: number;
+}
+
+
 export interface Pet {
   id_mascota?: number;
   nombre_mascota: string;
@@ -16,7 +24,10 @@ export interface Pet {
   latitud?: number;
   longitud?: number;
   precision_metros?: number;  
+  avistamientos?: avistamientos[];
 }
+
+
 
 @Injectable({
   providedIn: 'root'
