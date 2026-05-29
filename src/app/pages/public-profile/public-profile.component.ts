@@ -39,13 +39,15 @@ export class PublicProfileComponent {
 
   displayedColumns: string[] = [
     'fecha_hora',
-    'longitud',
     'latitud',
+    'longitud',
     'precision_metros',
     'Accion'
   ];
 
   dataSource: any[] = [];
+
+  filaSeleccionada: any = null;
 
   constructor(
 
@@ -130,6 +132,12 @@ export class PublicProfileComponent {
       { enableHighAccuracy: false, timeout: 20000, maximumAge: 0 }
     );
   }
+  
+  seleccionarFila(row: any): void {
+    this.filaSeleccionada = row;
+    this.verUbicacion(row);
+  }
+  
 
   actualizarMapa(lat: number, lng: number) {
 
